@@ -29,8 +29,9 @@
     platformImg.src = 'platforma.png';
     let coinImg = new Image();
     coinImg.src = 'moneta.png';
-
-
+    let ballImg = new Image();
+    ballImg.src = 'postac.png';
+    ball = new Ball( 10, 20, 50, 50, 100 );
 
     let platforms = [];
     let coins = [];
@@ -86,6 +87,14 @@
         this.img = new Image();
         this.img.src = imgName;
     }
+    function Ball( px, py, pw, ph, lp ){
+        this.x = px;
+        this.y = py;
+        this.w = pw;
+        this.h = ph;
+        this.lifePoints = lp;
+    }
+
     function drawPlatforms(){
         for ( let i=0; i<platforms.length; i++ )
             ctx.drawImage( platformImg, platforms[i].x, platforms[i].y, platforms[i].w, platforms[i].h )
@@ -100,11 +109,15 @@
                 ctx.drawImage( dangers[i].img, dangers[i].x, dangers[i].y, dangers[i].w, dangers[i].h )
 
     }
+    function drawBall(){
+        ctx.drawImage( ballImg, ball.x, ball.y, ball.w, ball.h );
+    }
     function draw(){
         ctx.clearRect( 0, 0, can.width, can.height );
         drawPlatforms();
         drawCoins();
         drawDangers();
+        drawBall();
     }
 
 </script>
