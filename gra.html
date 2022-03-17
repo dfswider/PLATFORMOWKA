@@ -5,9 +5,121 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <style>
+        canvas {
+            background-color: lightblue;
+            display: block;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+    <title>Przygody Wielkiej Kuli</title>
 </head>
 <body>
+<h1>Przygody Wielkiej Kuli</h1>
+<canvas id="my-can" width="1280px" height="580px">Okienko gry</canvas>
+<script>
+    let can = document.getElementById('my-can');
+    //can.width  = 1024;
+    //can.height = 768;
+    let ctx = can.getContext('2d');
+    let platformImg = new Image();
+    platformImg.src = 'platforma.png';
+    let coinImg = new Image();
+    coinImg.src = 'moneta.png';
+    let ballImg = new Image();
+    ballImg.src = 'postac.png';
+    ball = new Ball( 10, 20, 50, 50, 100 );
 
+    let platforms = [];
+    let coins = [];
+    let dangers = [];
+
+    platforms[0]  = new Platform(    0, 500, 750, 80 );
+    platforms[1]  = new Platform(  730, 500, 750, 80 );
+    platforms[2]  = new Platform(  100, 250, 100, 40 );
+    platforms[3]  = new Platform(  240, 360, 100, 40 );
+    platforms[4]  = new Platform(  500, 430, 100, 40 );
+    platforms[5]  = new Platform(  380, 180, 100, 40 );
+    platforms[6]  = new Platform(  730, 300, 100, 40 );
+    platforms[7]  = new Platform(  670, 100, 100, 40 );
+    platforms[8]  = new Platform( 1000, 390, 100, 40 );
+    platforms[9]  = new Platform(  200,  70, 100, 40 );
+    platforms[10] = new Platform( 1160, 320, 100, 40 );
+    platforms[11] = new Platform(  910, 160, 100, 40 );
+
+    coins[0] = new Coin(  130, 190, 35, 35 );
+    coins[1] = new Coin(  270, 300, 35, 35 );
+    coins[2] = new Coin(  530, 330, 35, 35 );
+    coins[3] = new Coin(  410, 120, 35, 35 );
+    coins[4] = new Coin(  760, 240, 35, 35 );
+    coins[5] = new Coin(  700,  40, 35, 35 );
+    coins[6] = new Coin( 1030, 330, 35, 35 );
+    coins[7] = new Coin(  230,  30, 35, 35 );
+    coins[8] = new Coin( 1190, 260, 35, 35 );
+
+    dangers[0] = new Danger(  40, 170, 35, 40,  5, 'grzyb.png');
+    dangers[1] = new Danger( 420, 340, 35, 40, 10, 'ogien.png');
+
+    setInterval( draw, 10 );
+
+    function Platform( px, py, pw, ph ){
+        this.x = px;
+        this.y = py;
+        this.w = pw;
+        this.h = ph;
+    }
+    function Coin( px, py, pw, ph ){
+        this.x = px;
+        this.y = py;
+        this.w = pw;
+        this.h = ph;
+    }
+    function Danger( px, py, pw, ph, kp, imgName ){
+        this.x = px;
+        this.y = py;
+        this.w = pw;
+        this.h = ph;
+        this.isVisible = true;
+        this.killPoints = kp;
+        this.img = new Image();
+        this.img.src = imgName;
+    }
+    function Ball( px, py, pw, ph, lp ){
+        this.x = px;
+        this.y = py;
+        this.w = pw;
+        this.h = ph;
+        this.lifePoints = lp;
+    }
+
+    function drawPlatforms(){
+        for ( let i=0; i<platforms.length; i++ )
+            ctx.drawImage( platformImg, platforms[i].x, platforms[i].y, platforms[i].w, platforms[i].h )
+    }
+    function drawCoins(){
+        for ( let i=0; i<coins.length; i++ )
+            ctx.drawImage( coinImg, coins[i].x, coins[i].y, coins[i].w, coins[i].h )
+    }
+    function drawDangers(){
+        for ( let i=0; i<dangers.length; i++ )
+            if (dangers[i].isVisible)
+                ctx.drawImage( dangers[i].img, dangers[i].x, dangers[i].y, dangers[i].w, dangers[i].h )
+
+    }
+    function drawBall(){
+        ctx.drawImage( ballImg, ball.x, ball.y, ball.w, ball.h );
+    }
+    function draw(){
+        ctx.clearRect( 0, 0, can.width, can.height );
+        drawPlatforms();
+        drawCoins();
+        drawDangers();
+        drawBall();
+    }
+
+</script>
 </body>
 </html>
