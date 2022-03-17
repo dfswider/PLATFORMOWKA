@@ -29,7 +29,10 @@
     coinImg.src = 'moneta.png';
     let ballImg = new Image();
     ballImg.src = 'postac.png';
-    ball = new Ball( 10, 20, 50, 50, 100 );
+    let ball = new Ball( 10, 20, 50, 50, 100, 0 );
+    let ddy = 1;
+    document.addEventListener()
+
 
     let platforms = [];
     let coins = [];
@@ -85,12 +88,14 @@
         this.img = new Image();
         this.img.src = imgName;
     }
-    function Ball( px, py, pw, ph, lp ){
+    function Ball( px, py, pw, ph, lp, g ){
         this.x = px;
         this.y = py;
         this.w = pw;
         this.h = ph;
         this.lifePoints = lp;
+        this.dy = g;
+        console.log( this.x, this.y, this.w, this.h, this.lifePoints, this.dy );
     }
 
     function drawPlatforms(){
@@ -108,6 +113,8 @@
 
     }
     function drawBall(){
+        //console.log(ball.x, ball.y, ball.w, ball.h);
+        gravity();
         ctx.drawImage( ballImg, ball.x, ball.y, ball.w, ball.h );
     }
     function draw(){
@@ -116,6 +123,18 @@
         drawCoins();
         drawDangers();
         drawBall();
+    }
+    function gravity(){
+        ball.dy = ball.dy + ddy;
+        ball.y = ball.y + ball.dy;
+        //console.log(ball.y, ball.dy)
+        for ( let i=0; i<platforms.length; i++ ){
+            if ( ball.y + ball.h     > platforms[i].y &&
+                 ball.y + 0.8*ball.h < platforms[i].y &&
+                 ball.x + ball.w/2   > platforms[i].x &&
+                 ball.x + ball.w/2   < platforms[i].x + platforms[i].w )
+                ball.dy = -ball.dy;
+        }
     }
 
 </script>
