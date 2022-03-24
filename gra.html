@@ -31,7 +31,8 @@
     ballImg.src = 'postac.png';
     let ball = new Ball( 10, 20, 50, 50, 100, 0 );
     let ddy = 1;
-    document.addEventListener()
+    document.addEventListener( 'keydown', ballMove, false);
+    document.addEventListener( 'keyup', ballStop, false);
 
 
     let platforms = [];
@@ -88,13 +89,14 @@
         this.img = new Image();
         this.img.src = imgName;
     }
-    function Ball( px, py, pw, ph, lp, g ){
+    function Ball( px, py, pw, ph, lp ){
         this.x = px;
         this.y = py;
         this.w = pw;
         this.h = ph;
         this.lifePoints = lp;
-        this.dy = g;
+        this.dx = 0;
+        this.dy = 0;
         console.log( this.x, this.y, this.w, this.h, this.lifePoints, this.dy );
     }
 
@@ -117,6 +119,41 @@
         gravity();
         ctx.drawImage( ballImg, ball.x, ball.y, ball.w, ball.h );
     }
+
+
+    function ballMove( e ){
+        if ( e.keyCode === 37 ) {
+            ball.dx = -2;
+        } else if ( e.keyCode === 39 ){
+            ball.dx = 2;
+        } else if ( e.keycode === 38 && ball.dy === 0 ){
+            ball.dy = 3;
+        }
+    }
+    function ballStop( e ){
+        if ( e.keyCode === 37 ) {
+            ball.dx = 0;
+        } else if ( e.keyCode === 39 ){
+            ball.dx = 0;
+        }
+    }
+
+    function gravity(){
+        ball.dy = ball.dy + ddy;
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        //console.log(ball.y, ball.dy)
+        for ( let i=0; i<platforms.length; i++ ){
+            if ( ball.y + ball.h     > platforms[i].y &&
+                 ball.y + 0.8*ball.h < platforms[i].y &&
+                 ball.x + ball.w/2   > platforms[i].x &&
+                 ball.x + ball.w/2   < platforms[i].x + platforms[i].w ) {
+                ball.dy = -ball.dy;
+            }
+        }
+    }
+
     function draw(){
         ctx.clearRect( 0, 0, can.width, can.height );
         drawPlatforms();
@@ -124,19 +161,6 @@
         drawDangers();
         drawBall();
     }
-    function gravity(){
-        ball.dy = ball.dy + ddy;
-        ball.y = ball.y + ball.dy;
-        //console.log(ball.y, ball.dy)
-        for ( let i=0; i<platforms.length; i++ ){
-            if ( ball.y + ball.h     > platforms[i].y &&
-                 ball.y + 0.8*ball.h < platforms[i].y &&
-                 ball.x + ball.w/2   > platforms[i].x &&
-                 ball.x + ball.w/2   < platforms[i].x + platforms[i].w )
-                ball.dy = -ball.dy;
-        }
-    }
-
 </script>
 </body>
 </html>
