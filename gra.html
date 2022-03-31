@@ -30,14 +30,14 @@
     let ballImg = new Image();
     ballImg.src = 'postac.png';
     let ball = new Ball( 10, 20, 50, 50, 100, 0 );
-    let ddy = 1;
-    let isCollision = false;
-    let colI = 0;
+    let ddy = 0.1;
+    let isYCollision = false;
+    let isXCollision = false;
+    let colYi = 0;
+    let colXi = 0;
+    let speedUp = false;
 
-    document.addEventListener( 'keydown', ballMove, false);
-    document.addEventListener( 'keyup', ballStop, false);
-
-
+    // create objects
     let platforms = [];
     let coins = [];
     let dangers = [];
@@ -68,9 +68,16 @@
     dangers[0] = new Danger(  40, 170, 35, 40,  5, 'grzyb.png');
     dangers[1] = new Danger( 420, 340, 35, 40, 10, 'ogien.png');
 
+    // run
+    console.log( 'Event listeners...');
+    document.addEventListener( 'keydown', ballMove, false);
+    document.addEventListener( 'keyup', ballStop, false);
     setInterval( draw, 10 );
 
-    // Functions
+    // *******************************************************
+    // *******             Functions                  ********
+    // *******************************************************
+    // Constructors
     function Platform( px, py, pw, ph ){
         this.x = px;
         this.y = py;
@@ -104,6 +111,7 @@
         console.log( this.x, this.y, this.w, this.h, this.lifePoints, this.dy );
     }
 
+    // Draw objects
     function drawPlatforms(){
         for ( let i=0; i<platforms.length; i++ )
             ctx.drawImage( platformImg, platforms[i].x, platforms[i].y, platforms[i].w, platforms[i].h )
@@ -123,49 +131,82 @@
         ctx.drawImage( ballImg, ball.x, ball.y, ball.w, ball.h );
     }
 
-
+    // Ball movement - event listeners
     function ballMove( e ){
+        console.log( "keydown: ", e.keyCode );
         if ( e.keyCode === 37 ) {
-            ball.dx = -2;
+            ball.dx = ball.dx - 2;
         } else if ( e.keyCode === 39 ){
-            ball.dx = 2;
-        } else if ( e.keyCode === 38 && ball.dy === 0 ){
-            ball.dy = 30;
-            ball.y += 3;
+            ball.dx = ball.dx + 2;
+        } else if ( e.keyCode === 38 ){ //&& ball.dy === 0 ){
+            // After next collision add -5 to ball vertical speed
+            // ball.dy = -5;
+            // ball.y += 3;
+            speedUp = true;
         }
     }
     function ballStop( e ){
+        console.log( "keyup: ", e.keyCode );
         if ( e.keyCode === 37 ) {
-            ball.dx = 0;
+            // ball.dx = 0;
         } else if ( e.keyCode === 39 ){
-            ball.dx = 0;
+            // ball.dx = 0;
         }
     }
 
+    // Gravity and collisions
     function gravity(){
-        isCollision = false;
-        for ( let i=0; i<platforms.length; i++ ){
-            if ( (( ball.y + ball.h )    >=  platforms[i].y ) && (( ball.y + 0.8 * ball.h ) <   platforms[i].y ) &&
-                 (( ball.x + ball.w/2 )  > platforms[i].x ) && (( ball.x + ball.w/2 )     < ( platforms[i].x + platforms[i].w )) ) {
-                isCollision = true;
-                colI = i;
-                console.log('is collision', isCollision, colI, ball.x, ball.y );
+        // Vertical collision Y
+        isYCollision = false;
+        for ( let i = 0; i < platforms.length; i++ ){
+            if ( (( ball.y + ball.h )   >= platforms[i].y ) && (( ball.y + 0.8 * ball.h ) <   platforms[i].y ) &&
+                 (( ball.x + ball.w/2 ) >  platforms[i].x ) && (( ball.x + ball.w/2 )     < ( platforms[i].x + platforms[i].w )) ) {
+                isYCollision = true;
+                colYi = i;
+            }
+            if( ball.y > 500 && ball.y < 550 ){
+                console.log( 'out of scene...', isYCollision, colYi, ball.x, ball.y )
+
             }
         }
-        if ( isCollision ){
+        if ( isYCollision ){
             if ( ball.dy > 0 ) {
-                //ball.dy = -( 0.8 * ball.dy );
-                console.log( ball.dy );
-                ball.dy = 0;
-                ball.y = platforms[colI].y - ball.h;
+                console.log( ball.y, ball.dy  );
+                 ball.dy = -( 0.8 * ball.dy );
+                 if ( speedUp ) {
+                     ball.dy -= 5;
+                     speedUp = false;
+                 }
+                ball.y = platforms[colYi].y - ball.h;
             }
         } else {
             ball.dy += ddy;
         }
+
+        // Horizontal collision X
+        for ( let i = 0; i < platforms.length; i++){
+            if ( ball.dx > 0 ){
+                if (  ){
+
+                }
+            }
+            if ( ball.dx < 0 ){
+                if (){
+
+                }
+            }
+
+        }
+        if ( isXCollision ){
+            ball.dx = - 0.8 * ball.dx ;
+
+        }
+
         ball.x += ball.dx;
         ball.y += ball.dy;
     }
 
+    // Draw all
     function draw(){
         ctx.clearRect( 0, 0, can.width, can.height );
         drawPlatforms();
